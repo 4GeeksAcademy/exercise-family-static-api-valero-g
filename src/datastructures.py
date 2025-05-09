@@ -24,7 +24,7 @@ class FamilyStructure:
                 "age": 35,
                 "lucky_numbers": [10, 14, 3]
             },
-                        {
+            {
                 "id": self._generate_id(),
                 "first_name": "Jimmy",
                 "last_name": last_name,
@@ -42,19 +42,16 @@ class FamilyStructure:
     def add_member(self, added_member):
         ## You have to implement this method
         ## Append the member to the list of _members
-        print(added_member)
-        for member in self._members:
-            if added_member["id"] == member["id"]:
-                return "id already exist"
+
         member_to_add = {
-            "id": added_member["id"],
+            "id": self._generate_id(),
             "first_name": added_member["first_name"],
             "last_name": self.last_name,
             "age":added_member["age"],
             "lucky_numbers": added_member["lucky_numbers"]
         }
         self._members.append(member_to_add)
-        return "Member added"
+        return member_to_add
 
 
     def delete_member(self, id):

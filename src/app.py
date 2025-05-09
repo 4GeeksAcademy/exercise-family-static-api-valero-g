@@ -31,42 +31,44 @@ def sitemap():
 @app.route('/members', methods=['GET'])
 def handle_members():
     # This is how you can use the Family datastructure by calling its methods
-    members = jackson_family.get_all_members()
-    response_body = {"family": members}
-    if response_body is None:
-        return jsonify("Family data not found"), 500
-    return jsonify(response_body), 200
+    try:
+        response_body = jackson_family.get_all_members()
+        return jsonify(response_body), 200
+    except:
+        return "Server error", 500
 
-@app.route ('/members/<int:member_id>', methods= ['GET'])
-def handle_member(member_id):
-    member = jackson_family.get_member(member_id)
-    response_body = member
-    if response_body == "Not found":
-        return jsonify("Member Id not found"), 400
-    if response_body == None:
-        return jsonify("Server error"), 500
-    return jsonify(response_body), 200
+@app.route ('/members/<int:id>', methods= ['GET'])
+def handle_member(id):
+    try:
+        response_body = jackson_family.get_member(id)
+        if response_body == "Not found":
+            return jsonify("Member Id not found"), 400
+        return jsonify(response_body), 200
+    except:
+        return "Server error", 500
 
 @app.route('/members', methods= ['POST'])
 def handle_new_member():
-    request_body = request.json
-    print(request_body.keys())
-    if "first_name" not in request_body.keys() or "age" not in request_body.keys() or "lucky_numbers" not in request_body.keys():
-        return jsonify("Wrong family member format"), 400
-    jackson_family.add_member(request_body)
-    members = jackson_family.get_all_members()
-    response_body = {"family": members}
-    return jsonify(response_body), 200
+    try:
+        request_body = request.json
+        print(request_body.keys())
+        if "first_name" not in request_body.keys() or "age" not in request_body.keys() or "lucky_numbers" not in request_body.keys():
+            return jsonify("Wrong family member format"), 400
+        response_body= jackson_family.add_member(request_body)
+        return jsonify(response_body), 200
+    except:
+        return "Server error", 500
 
 
 @app.route('/members/<int:member_id>', methods= ['DELETE'])
 def handle_delete_member(member_id):
-    response_body = jackson_family.delete_member(member_id)
-    if response_body ==  "Member not found":
-        return jsonify(response_body), 400
-    if response_body == None:
-        return jsonify("Server error"), 500
-    return jsonify(response_body), 200
+    try:
+        response_body = jackson_family.delete_member(member_id)
+        if response_body ==  "Member not found":
+            return jsonify({"done":False}), 400
+        return jsonify({"done":True}), 200
+    except:
+        return "Server error", 500
 
 # This only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
